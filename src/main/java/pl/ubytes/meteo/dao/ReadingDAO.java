@@ -3,7 +3,6 @@ package pl.ubytes.meteo.dao;
 import org.joda.time.DateTime;
 import pl.ubytes.meteo.model.SensorReading;
 import pl.ubytes.meteo.model.ReadingPeriod;
-
 import java.util.List;
 
 /**
