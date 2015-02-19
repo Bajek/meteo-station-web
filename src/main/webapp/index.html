@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="meteoStation">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Meteo station</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script src="js/angular.js"></script>
+    <script src="js/jquery-2.1.3.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/highcharts.src.js"></script>
+    <script src="js/charts/charts.js"></script>
+</head>
+<body role="document">
+
+
+<div class="container theme-showcase" role="main">
+    <div class="jumbotron" >
+        <h1>Meteo Station</h1>
+
+        <p>Temperature graph based on data collected by DHT11 sensor.</p>
+    </div>
+
+    <div id="chartsContainer" ng-controller="chartController"></div>
+
+</div>
+
+</body>
+</html>
