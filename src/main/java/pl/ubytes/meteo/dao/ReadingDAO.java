@@ -15,5 +15,4 @@ public interface ReadingDAO {
     public List<SensorReading> getReadings(int sensorId, DateTime start, DateTime end);
     public List<SensorReading> getReadings(int sensorId, ReadingPeriod period);
     public SensorReading getLastReading(int sensorId);
-
 }
