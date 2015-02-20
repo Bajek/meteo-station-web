@@ -5,35 +5,45 @@
 /* Controllers */
 var chartController = angular.module('meteoStation', []);
 
-chartController.controller('chartController', ['$scope', '$http',
-    function ($scope, $http) {
+chartController.controller('chartController', ['$scope', '$http', '$interval', '$q',
+    function ($scope, $http, $interval, $q) {
 
-        var startTime = new Date(),
-            endTime = new Date(),
-            counter = 0,
-            arrayData = [];
-
-        startTime.setDate(startTime.getDate() - 1);
+        var startTime, endTime, intervalEnabled = false;
 
 
+
+        initPlot();
         getPlotData();
 
-        function getPlotData() {
-            $http.get('/rest/get/1/' + startTime.getTime() + '/' + endTime.getTime()).then(increaseCounter);
-            $http.get('/rest/get/2/' + startTime.getTime() + '/' + endTime.getTime()).then(increaseCounter);
-        }
 
-        function increaseCounter(restData) {
-            counter++;
-            arrayData[restData.data.sensorId] = restData.data.data;
-            if (counter == 2) {
-                plotData(arrayData);
+        function getPlotData() {
+            var p1, p2;
+            getTime();
+            p1 = $http.get('/rest/get/1/' + startTime.getTime() + '/' + endTime.getTime()).then(setTemp);
+            p2 = $http.get('/rest/get/2/' + startTime.getTime() + '/' + endTime.getTime()).then(setHumi);
+
+            if (!intervalEnabled) {
+                $q.all([p1, p2]).then(initInterval);
             }
 
         }
 
-        function plotData(arrayData) {
+
+        function setTemp(restData) {
+            var chart = $('#chartsContainer').highcharts();
+            chart.series[0].setData(restData.data.data);
+        }
+
+        function setHumi(restData) {
+            var chart = $('#chartsContainer').highcharts();
+            chart.series[1].setData(restData.data.data);
+        }
+
+        function initPlot() {
             $('#chartsContainer').highcharts({
+                global: {
+                    getTimezoneOffset: 1
+                },
                 credits: {
                     enabled: false
                 },
@@ -52,7 +62,7 @@ chartController.controller('chartController', ['$scope', '$http',
                     x: -20 //center
                 },
                 subtitle: {
-                    text: 'Last week',
+                    text: 'Last hour',
                     x: -20
                 },
                 xAxis: {
@@ -74,17 +84,30 @@ chartController.controller('chartController', ['$scope', '$http',
                         valueSuffix: '°C'
                     },
                     name: 'Temperature (°C)',
-                    data: arrayData[1]
+                    data: [] // arrayData[0].data.data
                 },
                 {
                     tooltip: {
                         valueSuffix: '%'
                     },
                     name: 'Humidity (%)',
-                    data: arrayData[2]
+                    data: [] // arrayData[1].data.data
                 }]
+
             });
 
+        }
+
+        function getTime() {
+            //last hour
+            startTime = new Date();
+            startTime = new Date(startTime.getTime() - (1000*60*60));
+            endTime = new Date();
+        }
+
+        function initInterval() {
+            $interval(getPlotData, 5000);
+            intervalEnabled = true;
         }
 
 
