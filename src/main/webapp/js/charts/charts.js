@@ -11,21 +11,31 @@ chartController.controller('chartController', ['$scope', '$http', '$interval', '
         var startTime, endTime, intervalEnabled = false;
 
 
-
         initPlot();
         getPlotData();
 
 
         function getPlotData() {
-            var p1, p2;
+            var p1, p2, p3, callback;
             getTime();
-            p1 = $http.get('/rest/get/1/' + startTime.getTime() + '/' + endTime.getTime()).then(setTemp);
-            p2 = $http.get('/rest/get/2/' + startTime.getTime() + '/' + endTime.getTime()).then(setHumi);
+            callback = callbackCreator(0);
+            p1 = $http.get('/rest/get/1/' + startTime.getTime() + '/' + endTime.getTime()).then(callback);
+            callback = callbackCreator(1);
+            p2 = $http.get('/rest/get/2/' + startTime.getTime() + '/' + endTime.getTime()).then(callback);
+            callback = callbackCreator(2);
+            p3 = $http.get('/rest/get/3/' + startTime.getTime() + '/' + endTime.getTime()).then(callback);
 
             if (!intervalEnabled) {
-                $q.all([p1, p2]).then(initInterval);
+                $q.all([p1, p2, p3]).then(initInterval);
             }
 
+        }
+
+        function callbackCreator(seriesId) {
+            return function(restData) {
+                var chart = $('#chartsContainer').highcharts();
+                chart.series[seriesId].setData(restData.data.data);
+            }
         }
 
 
@@ -40,10 +50,15 @@ chartController.controller('chartController', ['$scope', '$http', '$interval', '
         }
 
         function initPlot() {
-            $('#chartsContainer').highcharts({
+
+            Highcharts.setOptions({
                 global: {
-                    getTimezoneOffset: 1
-                },
+                    //useUTC: false,
+                    timezoneOffset: -60
+                }
+            });
+
+            $('#chartsContainer').highcharts({
                 credits: {
                     enabled: false
                 },
@@ -83,16 +98,24 @@ chartController.controller('chartController', ['$scope', '$http', '$interval', '
                     tooltip: {
                         valueSuffix: '°C'
                     },
-                    name: 'Temperature (°C)',
-                    data: [] // arrayData[0].data.data
+                    name: 'DHT11 temperature (°C)',
+                    data: []
                 },
                 {
                     tooltip: {
                         valueSuffix: '%'
                     },
-                    name: 'Humidity (%)',
-                    data: [] // arrayData[1].data.data
-                }]
+                    name: 'DHT11 humidity (%)',
+                    data: []
+                },
+                {
+                    tooltip: {
+                        valueSuffix: '°C'
+                    },
+                    name: 'Dallas temperature (°C)',
+                    data: []
+                }
+                ]
 
             });
 
