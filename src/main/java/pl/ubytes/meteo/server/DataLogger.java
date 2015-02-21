@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.ubytes.meteo.dao.impl.ReadingService;
+import pl.ubytes.meteo.dao.ReadingDAO;
 import pl.ubytes.meteo.model.SensorReading;
 import pl.ubytes.meteo.security.TokenChecker;
 
@@ -34,7 +34,7 @@ public class DataLogger {
     private TokenChecker tokenChecker;
 
     @Autowired
-    private ReadingService readingService;
+    private ReadingDAO readingService;
 
 
     @RequestMapping(value = "/get/{id}/{start}/{end}", method = RequestMethod.GET)
