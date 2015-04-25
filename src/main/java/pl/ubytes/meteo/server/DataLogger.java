@@ -66,7 +66,7 @@ public class DataLogger {
 
     }
 
-    @RequestMapping(value = "/log/{token}/{id}/{value}", method = RequestMethod.GET)
+    @RequestMapping(value = "/log/{token}/{id}/{value}", method = RequestMethod.PUT)
     public
     @ResponseBody
     ResponseEntity<String> log(@PathVariable("id") Integer id,
