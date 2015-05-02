@@ -1,3 +1,11 @@
+CREATE DATABASE meteo;
+
+use meteo;
+
+CREATE USER '<mysql.username>'@'localhost' IDENTIFIED BY '<mysql.password>';
+
+GRANT ALL PRIVILEGES ON meteo.* TO 'monty'@'localhost'  WITH GRANT OPTION;
+
 CREATE TABLE `READINGS` (
   `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `TIME` BIGINT UNSIGNED NOT NULL,
