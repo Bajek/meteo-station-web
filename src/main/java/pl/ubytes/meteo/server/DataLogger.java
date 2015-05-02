@@ -36,7 +36,6 @@ public class DataLogger {
     @Autowired
     private ReadingDAO readingService;
 
-
     @RequestMapping(value = "/get/{id}/{start}/{end}", method = RequestMethod.GET)
 
     public
